@@ -13,6 +13,8 @@ public class Main {
             SkinGenerator skinGenerator = new SkinGenerator(faceImage, headBackImage, headRightImage,
                     null, headTopImage, headBottomImage);
             skinGenerator.generateSkin();
+            SkinCombiner skinCombiner = new SkinCombiner("images/steve/128x128.png", "images/steve/128x128.png");
+            skinCombiner.combineSkins();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }

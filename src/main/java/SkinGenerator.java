@@ -10,62 +10,34 @@ import java.util.UUID;
 
 public class SkinGenerator {
 
-    final int HEAD_TOP_X_OFFSET = 40;
-    final int HEAD_TOP_Y_OFFSET = 0;
-    final int HEAD_BOTTOM_X_OFFSET = 48;
-    final int HEAD_BOTTOM_Y_OFFSET = 0;
-    final int HEAD_RIGHT_X_OFFSET = 32;
-    final int HEAD_RIGHT_Y_OFFSET = 8;
-    final int HEAD_FRONT_X_OFFSET = 40;
-    final int HEAD_FRONT_Y_OFFSET = 8;
-    final int HEAD_LEFT_X_OFFSET = 48;
-    final int HEAD_LEFT_Y_OFFSET = 8;
-    final int HEAD_BACK_X_OFFSET = 56;
-    final int HEAD_BACK_Y_OFFSET = 8;
-
-    final int RIGHT_ARM_HAND_X_OFFSET = 44;
-    final int RIGHT_ARM_HAND_Y_OFFSET = 32;
-    final int RIGHT_ARM_SHOULDER_X_OFFSET = 48;
-    final int RIGHT_ARM_SHOULDER_Y_OFFSET = 32;
-    final int RIGHT_ARM_OUTSIDE_X_OFFSET = 40;
-    final int RIGHT_ARM_OUTSIDE_Y_OFFSET = 36;
-    final int RIGHT_ARM_FRONT_X_OFFSET = 44;
-    final int RIGHT_ARM_FRONT_Y_OFFSET = 36;
-    final int RIGHT_ARM_INSIDE_X_OFFSET = 48;
-    final int RIGHT_ARM_INSIDE_Y_OFFSET = 36;
-    final int RIGHT_ARM_BACK_X_OFFSET = 52;
-    final int RIGHT_ARM_BACK_Y_OFFSET = 36;
-
-
-
-
     private BufferedImage generatedSkin;
     private SourceImage faceImage;
-    private SourceImage headLeftSideImage;
-    private SourceImage headRightSideImage;
+    private SourceImage headLeftImage;
+    private SourceImage headRightImage;
     private SourceImage headBackImage;
     private SourceImage headBottomImage;
     private SourceImage headTopImage;
 
     public SkinGenerator(String faceImageFilePath, String headBackImageFilePath, String headRightSideImageFilePath,
-                         String headLeftSideImageFilePath, String headTopImageFilePath, String headBottomImageFilePath) throws IOException {
-        this.generatedSkin = ImageIO.read(new File("blackout.png"));
+                         String headLeftSideImageFilePath, String headTopImageFilePath, String headBottomImageFilePath)
+                         throws IOException {
+        this.generatedSkin = ImageIO.read(new File("blank-skin-64x64.png"));
         this.faceImage = unpackSquareImage(faceImageFilePath);
         this.headBackImage = unpackSquareImage(headBackImageFilePath);
         Pair<SourceImage, SourceImage> pair = unpackPossiblyMirroredSourceImages(headLeftSideImageFilePath, headRightSideImageFilePath);
-        this.headLeftSideImage = pair.getValue0();
-        this.headRightSideImage = pair.getValue1();
+        this.headLeftImage = pair.getValue0();
+        this.headRightImage = pair.getValue1();
         this.headTopImage = unpackSquareImage(headTopImageFilePath);
         this.headBottomImage = unpackSquareImage(headBottomImageFilePath);
     }
 
     public void generateSkin() throws IOException {
-        generateArea(faceImage, 8, 8, HEAD_FRONT_X_OFFSET, HEAD_FRONT_Y_OFFSET);
-        generateArea(headBackImage, 8, 8, HEAD_BACK_X_OFFSET, HEAD_BACK_Y_OFFSET);
-        generateArea(headLeftSideImage, 8, 8, HEAD_LEFT_X_OFFSET, HEAD_LEFT_Y_OFFSET);
-        generateArea(headRightSideImage, 8, 8, HEAD_RIGHT_X_OFFSET, HEAD_RIGHT_Y_OFFSET);
-        generateArea(headTopImage, 8, 8, HEAD_TOP_X_OFFSET, HEAD_TOP_Y_OFFSET);
-        generateArea(headBottomImage, 8, 8, HEAD_BOTTOM_X_OFFSET, HEAD_BOTTOM_Y_OFFSET);
+        generateArea(faceImage, 8, 8, Offsets.HEAD_FRONT_X_OFFSET, Offsets.HEAD_FRONT_Y_OFFSET);
+        generateArea(headBackImage, 8, 8, Offsets.HEAD_BACK_X_OFFSET, Offsets.HEAD_BACK_Y_OFFSET);
+        generateArea(headLeftImage, 8, 8, Offsets.HEAD_LEFT_X_OFFSET, Offsets.HEAD_LEFT_Y_OFFSET);
+        generateArea(headRightImage, 8, 8, Offsets.HEAD_RIGHT_X_OFFSET, Offsets.HEAD_RIGHT_Y_OFFSET);
+        generateArea(headTopImage, 8, 8, Offsets.HEAD_TOP_X_OFFSET, Offsets.HEAD_TOP_Y_OFFSET);
+        generateArea(headBottomImage, 8, 8, Offsets.HEAD_BOTTOM_X_OFFSET, Offsets.HEAD_BOTTOM_Y_OFFSET);
 
         ImageIO.write(generatedSkin, "png", new File("generated-skins/" + UUID.randomUUID() + ".png"));
         System.out.println("Done...");
@@ -110,14 +82,14 @@ public class SkinGenerator {
         return new Color(red, green, blue);
     }
 
-    private Pair<SourceImage, SourceImage> unpackPossiblyMirroredSourceImages(String pathA, String pathB) throws IOException {
 
+    private Pair<SourceImage, SourceImage> unpackPossiblyMirroredSourceImages(String pathA, String pathB) throws IOException {
         SourceImage imageA;
         SourceImage imageB;
 
         if (pathB == null && pathA != null) {
             imageA = unpackSquareImage(pathA);
-            List<List<Color>> rightSideImage = ImageFilters.mirrorLeftRight(headLeftSideImage.getPixels());
+            List<List<Color>> rightSideImage = ImageFilters.mirrorLeftRight(headLeftImage.getPixels());
             int sideLength = imageA.getWidth();
             imageB = new SourceImage(sideLength, sideLength, rightSideImage);
         } else if (pathB != null && pathA == null) {
@@ -129,7 +101,6 @@ public class SkinGenerator {
             imageA = unpackSquareImage(pathA);
             imageB = unpackSquareImage(pathB);
         }
-
         return new Pair<>(imageA, imageB);
     }
 
@@ -142,15 +113,15 @@ public class SkinGenerator {
     }
 
     private List<List<Color>> getSquarePixelMap(BufferedImage image) {
-        int side = image.getHeight();
-        if (side > image.getWidth()) {
-            side = image.getWidth();
+        int sideLength = image.getHeight();
+        if (sideLength > image.getWidth()) {
+            sideLength = image.getWidth();
         }
 
         List<List<Color>> pixelMap = new ArrayList<>();
-        for (int x = 0; x < side; x++) {
+        for (int x = 0; x < sideLength; x++) {
             pixelMap.add(new ArrayList<>());
-            for (int y = 0; y < side; y++) {
+            for (int y = 0; y < sideLength; y++) {
                 int pixel = image.getRGB(x,y);
                 pixelMap.get(x).add(new Color(pixel, true));
             }
