@@ -32,12 +32,12 @@ public class SkinGenerator {
     }
 
     public void generateSkin() throws IOException {
-        generateArea(faceImage, 8, 8, Offsets.HEAD_FRONT_X_OFFSET, Offsets.HEAD_FRONT_Y_OFFSET);
-        generateArea(headBackImage, 8, 8, Offsets.HEAD_BACK_X_OFFSET, Offsets.HEAD_BACK_Y_OFFSET);
-        generateArea(headLeftImage, 8, 8, Offsets.HEAD_LEFT_X_OFFSET, Offsets.HEAD_LEFT_Y_OFFSET);
-        generateArea(headRightImage, 8, 8, Offsets.HEAD_RIGHT_X_OFFSET, Offsets.HEAD_RIGHT_Y_OFFSET);
-        generateArea(headTopImage, 8, 8, Offsets.HEAD_TOP_X_OFFSET, Offsets.HEAD_TOP_Y_OFFSET);
-        generateArea(headBottomImage, 8, 8, Offsets.HEAD_BOTTOM_X_OFFSET, Offsets.HEAD_BOTTOM_Y_OFFSET);
+        generateArea(faceImage, 8, 8, Offsets.HEAD_FRONT_X, Offsets.HEAD_FRONT_Y);
+        generateArea(headBackImage, 8, 8, Offsets.HEAD_BACK_X, Offsets.HEAD_BACK_Y);
+        generateArea(headLeftImage, 8, 8, Offsets.HEAD_LEFT_X, Offsets.HEAD_LEFT_Y);
+        generateArea(headRightImage, 8, 8, Offsets.HEAD_RIGHT_X, Offsets.HEAD_RIGHT_Y);
+        generateArea(headTopImage, 8, 8, Offsets.HEAD_TOP_X, Offsets.HEAD_TOP_Y);
+        generateArea(headBottomImage, 8, 8, Offsets.HEAD_BOTTOM_X, Offsets.HEAD_BOTTOM_Y);
 
         ImageIO.write(generatedSkin, "png", new File("generated-skins/" + UUID.randomUUID() + ".png"));
         System.out.println("Done...");

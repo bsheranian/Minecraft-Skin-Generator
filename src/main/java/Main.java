@@ -3,7 +3,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String args[]) {
 
-        String faceImage = "images/face.jpg";
+        String faceImage = "images/face.png";
         String headBackImage = "images/back.png";
         String headRightImage = "images/side.png";
         String headTopImage = "images/top.png";
